@@ -9,8 +9,8 @@ This is a simple React application that allows users to search for GitHub users 
    ```bash
     git clone https://github.com/your-username/github-user-search-app.git
     cd github-user-search-app
-    npm install
-    npm start
+    npm install or yarn install
+    npm start or yarn start
 
 ## API
 
