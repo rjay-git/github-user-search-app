@@ -18,3 +18,6 @@ This app uses the GitHub API to fetch user data and repositories. The endpoints 
 
 Search Users: https://api.github.com/search/users
 User Repositories: https://api.github.com/users/:username/repos
+
+## Deployed Link
+https://rjay-git.github.io/github-user-search-app
