@@ -6,6 +6,7 @@ import {
   Button, 
   Card,
   CardContent, 
+  CircularProgress, 
   TextField 
   } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -26,9 +27,11 @@ interface Repository {
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSearch = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `https://api.github.com/search/users?q=${searchTerm}&per_page=5`
       );
@@ -46,6 +49,15 @@ const App: React.FC = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
     }
+    finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -57,22 +69,27 @@ const App: React.FC = () => {
         label="Enter username"
         value={searchTerm}
         variant="outlined"
+        onKeyDown={handleKeyPress}
       />
       <br />
-      <Button variant="contained" onClick={handleSearch}>Search</Button>
+      <Button
+        variant="contained" 
+        onClick={handleSearch}
+        disabled={isLoading}
+      >{ isLoading ? <CircularProgress color="success" /> : `Search`}</Button>
       <div>
         {users.map((user) => (
           <Accordion key={user.id}>
             <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             >
-              {user.login}
+              <h3>{user.login}</h3>
             </AccordionSummary>
               <AccordionDetails>
                 { user.repositories.length > 1 ? user.repositories.map((repo: Repository) => (
                   <Card key={repo.id} style={{backgroundColor: '#CCCCCC', marginBottom: '25px'}}>
                     <CardContent>
-                      <h3>{repo.name}</h3>
+                      <h4>{repo.name}</h4>
                       <h5>{repo.description}</h5>
                       <p>Watchers: {repo.watchers}</p>
                     </CardContent>
