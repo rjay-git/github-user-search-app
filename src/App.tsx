@@ -37,13 +37,14 @@ const App: React.FC = () => {
       );
       const data = await response.json();
       if (data.items) {
-        const fetchedUsers: User[] = await Promise.all(
-          data.items.map(async (item: any) => {
-            const response = await fetch(`https://api.github.com/users/${item.login}/repos`);
-            const data = await response.json();
-            return { id: item.id, login: item.login, repositories: data };
-          }
-        ));
+        const fetchedUsers: User[] = [];
+        for (let i = 0; i < data.items.length; i++) {
+          const item = data.items[i];
+          const response = await fetch(`https://api.github.com/users/${item.login}/repos`);
+          const reposData = await response.json();
+          const user = { id: item.id, login: item.login, repositories: reposData };
+          fetchedUsers.push(user);
+        }
         setUsers(fetchedUsers);
       }
     } catch (error) {
